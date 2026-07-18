@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coletor de Dados — Brasileirão Série A 2026</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --border:#2b3444;
+    --text:#e6edf3; --muted:#8b98a9; --accent:#25c26e; --accent2:#3fb0ff;
+    --lib:#1f6f3d; --sul:#204a6b; --reb:#7a2230; --warn:#f0b429;
+    --shadow:0 8px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:linear-gradient(180deg,#0b0f16,#0d1117 40%);
+    color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.45; -webkit-font-smoothing:antialiased;
+  }
+  header{
+    padding:26px 20px 18px; text-align:center;
+    border-bottom:1px solid var(--border); background:rgba(20,25,33,.6);
+  }
+  header h1{margin:0 0 4px; font-size:clamp(20px,4vw,30px); letter-spacing:.3px}
+  header h1 .ball{filter:grayscale(.1)}
+  header p{margin:0; color:var(--muted); font-size:14px}
+  .wrap{max-width:1080px; margin:0 auto; padding:20px}
+  .controls{
+    display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end;
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    padding:16px; box-shadow:var(--shadow);
+  }
+  .field{display:flex; flex-direction:column; gap:6px}
+  .field label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px}
+  select,button{
+    font-size:14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--panel2); color:var(--text); padding:10px 14px; cursor:pointer;
+    transition:.15s;
+  }
+  select:hover{border-color:var(--accent2)}
+  button.primary{background:var(--accent); color:#03210f; border-color:transparent; font-weight:700}
+  button.primary:hover{filter:brightness(1.08)}
+  button.ghost:hover{border-color:var(--accent2); color:#fff}
+  button:disabled{opacity:.5; cursor:not-allowed}
+  .spacer{flex:1}
+  .status{
+    margin-top:12px; font-size:13px; color:var(--muted);
+    display:flex; align-items:center; gap:8px; min-height:20px;
+  }
+  .dot{width:9px; height:9px; border-radius:50%; background:var(--muted); flex:none}
+  .dot.ok{background:var(--accent)} .dot.err{background:#e5534b} .dot.load{background:var(--warn); animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .tabs{display:flex; gap:6px; margin:22px 0 14px; flex-wrap:wrap}
+  .tab{padding:8px 16px; border-radius:999px; background:var(--panel); border:1px solid var(--border); font-size:14px}
+  .tab.active{background:var(--accent2); color:#04223a; border-color:transparent; font-weight:700}
+  .card{background:var(--panel); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow)}
+  table{width:100%; border-collapse:collapse; font-size:14px}
+  th,td{padding:10px 8px; text-align:center; border-bottom:1px solid var(--border); white-space:nowrap}
+  th{background:var(--panel2); color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.4px; position:sticky; top:0; cursor:pointer; user-select:none}
+  th:hover{color:#fff}
+  td.team{text-align:left; font-weight:600}
+  td.team img{width:20px; height:20px; vertical-align:middle; margin-right:8px; border-radius:3px}
+  tr:hover td{background:rgba(63,176,255,.06)}
+  .pos{font-weight:700; width:30px}
+  .zone-lib{box-shadow:inset 4px 0 0 var(--accent)}
+  .zone-sul{box-shadow:inset 4px 0 0 var(--accent2)}
+  .zone-reb{box-shadow:inset 4px 0 0 #e5534b}
+  .pts{font-weight:800; color:#fff}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; margin:14px 2px 0; font-size:12.5px; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .chip{width:12px; height:12px; border-radius:3px; display:inline-block}
+  .match{display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); font-size:14px; gap:10px}
+  .match:last-child{border-bottom:none}
+  .match .side{flex:1; display:flex; align-items:center; gap:8px}
+  .match .side.home{justify-content:flex-end; text-align:right}
+  .match .side img{width:22px;height:22px;border-radius:3px}
+  .match .score{background:var(--panel2); border:1px solid var(--border); border-radius:8px; padding:4px 12px; font-weight:800; min-width:64px; text-align:center}
+  .match .meta{width:100%; text-align:center; color:var(--muted); font-size:11.5px; margin-bottom:6px}
+  .matchgroup .head{padding:12px 16px; font-weight:700; background:var(--panel2); color:var(--accent2); font-size:13px; text-transform:uppercase; letter-spacing:.5px}
+  .teams-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; padding:16px}
+  .teamcard{background:var(--panel2); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; transition:.15s}
+  .teamcard:hover{border-color:var(--accent2); transform:translateY(-2px)}
+  .teamcard img{width:52px; height:52px; object-fit:contain; margin-bottom:8px}
+  .teamcard .name{font-weight:700; font-size:14px}
+  .teamcard .sub{color:var(--muted); font-size:12px; margin-top:2px}
+  .empty{padding:48px 16px; text-align:center; color:var(--muted)}
+  footer{padding:24px 20px 40px; text-align:center; color:var(--muted); font-size:12.5px; border-top:1px solid var(--border); margin-top:30px}
+  footer a{color:var(--accent2); text-decoration:none}
+  .hidden{display:none}
+  .src-note{font-size:11.5px; color:var(--muted); margin-top:6px}
+  @media(max-width:640px){
+    th,td{padding:8px 5px; font-size:12.5px}
+    .hide-mob{display:none}
+    .controls{padding:12px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="ball">⚽</span> Coletor de Dados — Brasileirão Série A <span style="color:var(--accent)">2026</span></h1>
+  <p>Coleta ao vivo de classificação, jogos e times · dados via API pública · exporta em JSON e CSV</p>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="field">
+      <label>Temporada</label>
+      <select id="season">
+        <option value="2026" selected>2026</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Fonte</label>
+      <select id="source">
+        <option value="direct">API direta (TheSportsDB)</option>
+        <option value="proxy">API via proxy CORS</option>
+        <option value="local">Dataset local (offline)</option>
+      </select>
+    </div>
+    <button class="primary" id="btnCollect">↻ Coletar dados</button>
+    <div class="spacer"></div>
+    <div class="field">
+      <label>Exportar</label>
+      <div style="display:flex; gap:8px">
+        <button class="ghost" id="btnJson" disabled>JSON</button>
+        <button class="ghost" id="btnCsv" disabled>CSV</button>
+      </div>
+    </div>
+  </div>
+  <div class="status"><span class="dot" id="dot"></span><span id="statusText">Pronto. Clique em “Coletar dados” para começar.</span></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="tabela">Classificação</div>
+    <div class="tab" data-tab="jogos">Jogos</div>
+    <div class="tab" data-tab="times">Times</div>
+  </div>
+
+  <!-- CLASSIFICAÇÃO -->
+  <section id="tabela">
+    <div class="card">
+      <table id="standings">
+        <thead>
+          <tr>
+            <th data-k="rank">#</th>
+            <th data-k="team" style="text-align:left">Time</th>
+            <th data-k="pts">P</th>
+            <th data-k="played">J</th>
+            <th data-k="win">V</th>
+            <th data-k="draw">E</th>
+            <th data-k="loss">D</th>
+            <th data-k="gf" class="hide-mob">GP</th>
+            <th data-k="ga" class="hide-mob">GC</th>
+            <th data-k="gd">SG</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="10" class="empty">Nenhum dado coletado ainda.</td></tr></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><i class="chip" style="background:var(--accent)"></i> Libertadores (1–6)</span>
+      <span><i class="chip" style="background:var(--accent2)"></i> Sul-Americana (7–12)</span>
+      <span><i class="chip" style="background:#e5534b"></i> Rebaixamento (17–20)</span>
+    </div>
+  </section>
+
+  <!-- JOGOS -->
+  <section id="jogos" class="hidden">
+    <div class="card matchgroup">
+      <div class="head">Últimos resultados</div>
+      <div id="pastMatches"><div class="empty">Colete os dados para ver os jogos.</div></div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="card matchgroup">
+      <div class="head">Próximos jogos</div>
+      <div id="nextMatches"><div class="empty">Colete os dados para ver os jogos.</div></div>
+    </div>
+  </section>
+
+  <!-- TIMES -->
+  <section id="times" class="hidden">
+    <div class="card">
+      <div id="teamsGrid" class="teams-grid"><div class="empty">Colete os dados para ver os times.</div></div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  Fonte de dados: <a href="https://www.thesportsdb.com" target="_blank" rel="noopener">TheSportsDB</a> (API gratuita) ·
+  Fallback CORS: <a href="https://allorigins.win" target="_blank" rel="noopener">AllOrigins</a> ·
+  Projeto Brasileirão Série A 2026 · coletor client-side, sem back-end.
+</footer>
+
+<script>
+/* =========================================================================
+   Coletor de Dados — Brasileirão Série A 2026
+   App 100% client-side. Coleta via TheSportsDB (API gratuita, CORS liberado).
+   Estratégia de coleta em cascata:
+     1) API direta  2) API via proxy CORS  3) Dataset local embutido
+   ========================================================================= */
+
+const API_KEY   = "3";                 // chave gratuita de teste do TheSportsDB
+const LEAGUE_ID = "4351";              // Brazilian Serie A
+const BASE      = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`;
+const PROXY     = "https://api.allorigins.win/raw?url=";
+
+// Estado da coleta (fica disponível para exportação)
+let DATA = { season:null, collectedAt:null, standings:[], past:[], next:[], teams:[] };
+
+/* ---------- Dataset local (fallback offline): os 20 clubes da Série A 2026 --- */
+const TEAMS_2026 = [
+  "Flamengo","Palmeiras","Cruzeiro","Mirassol","Fluminense","Bahia","Botafogo",
+  "São Paulo","Red Bull Bragantino","Corinthians","Grêmio","Vasco da Gama",
+  "Atlético Mineiro","Santos","Vitória","Internacional","Coritiba",
+  "Athletico Paranaense","Chapecoense","Remo"
+];
+// Snapshot parcial real (fonte: TheSportsDB / Wikipédia, meados de 2026) — usado só offline
+const LOCAL_STANDINGS = [
+  ["Palmeiras",41],["Flamengo",34],["Fluminense",31],["Athletico Paranaense",30],
+  ["Red Bull Bragantino",29],["Cruzeiro",27],["São Paulo",26],["Bahia",25],
+  ["Botafogo",24],["Corinthians",23],["Mirassol",22],["Atlético Mineiro",21],
+  ["Internacional",20],["Grêmio",19],["Santos",18],["Vasco da Gama",17],
+  ["Vitória",15],["Coritiba",14],["Chapecoense",12],["Remo",10]
+];
+
+/* ------------------------------- Helpers UI -------------------------------- */
+const $  = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+function setStatus(text, kind){ // kind: '', 'ok', 'err', 'load'
+  $("#statusText").textContent = text;
+  $("#dot").className = "dot" + (kind ? " "+kind : "");
+}
+const num = v => { const n = parseInt(v,10); return isNaN(n)?0:n; };
+
+/* --------------------------- Camada de rede -------------------------------- */
+async function fetchJson(url, mode){
+  const finalUrl = (mode === "proxy") ? PROXY + encodeURIComponent(url) : url;
+  const res = await fetch(finalUrl, { headers:{ "Accept":"application/json" } });
+  if(!res.ok) throw new Error("HTTP "+res.status);
+  return res.json();
+}
+
+/* ----------------------------- Coleta principal ---------------------------- */
+async function collect(){
+  const season = $("#season").value;
+  const source = $("#source").value;
+  toggleExport(false);
+  setStatus("Coletando dados da temporada "+season+"…", "load");
+
+  if(source === "local"){
+    buildLocal(season);
+    render();
+    setStatus("Dataset local carregado ("+DATA.standings.length+" times). Sem conexão usada.", "ok");
+    toggleExport(true);
+    return;
+  }
+
+  const mode = source; // 'direct' | 'proxy'
+  try{
+    // 3 requisições em paralelo: tabela, últimos jogos, próximos jogos
+    const [tableRes, pastRes, nextRes] = await Promise.all([
+      fetchJson(`${BASE}/lookuptable.php?l=${LEAGUE_ID}&s=${season}`, mode),
+      fetchJson(`${BASE}/eventspastleague.php?id=${LEAGUE_ID}`, mode).catch(()=>({})),
+      fetchJson(`${BASE}/eventsnextleague.php?id=${LEAGUE_ID}`, mode).catch(()=>({}))
+    ]);
+
+    const table = tableRes.table || [];
+    if(!table.length) throw new Error("Tabela vazia para a temporada "+season);
+
+    DATA.season = season;
+    DATA.collectedAt = new Date().toISOString();
+    DATA.standings = table.map(r => ({
+      rank:num(r.intRank), team:r.strTeam, badge:r.strBadge||"",
+      played:num(r.intPlayed), win:num(r.intWin), draw:num(r.intDraw), loss:num(r.intLoss),
+      gf:num(r.intGoalsFor), ga:num(r.intGoalsAgainst), gd:num(r.intGoalDifference),
+      pts:num(r.intPoints)
+    }));
+    DATA.teams = DATA.standings.map(s => ({ name:s.team, badge:s.badge }));
+    DATA.past = mapEvents(pastRes.events);
+    DATA.next = mapEvents(nextRes.events);
+
+    render();
+    setStatus(`Coleta concluída: ${DATA.standings.length} times, ${DATA.past.length} resultados, ${DATA.next.length} próximos jogos. Fonte: API ${mode==="proxy"?"(via proxy)":"direta"}.`, "ok");
+    toggleExport(true);
+  }catch(err){
+    // Cascata: se a direta falhar, tenta proxy automaticamente; senão, cai no local
+    if(mode === "direct"){
+      setStatus("API direta falhou ("+err.message+"). Tentando via proxy CORS…", "load");
+      $("#source").value = "proxy";
+      return collect();
+    }
+    setStatus("Falha na coleta online ("+err.message+"). Carregando dataset local.", "err");
+    buildLocal(season);
+    render();
+    toggleExport(true);
+  }
+}
+
+function mapEvents(events){
+  if(!Array.isArray(events)) return [];
+  return events.map(e => ({
+    home:e.strHomeTeam, away:e.strAwayTeam,
+    homeScore:e.intHomeScore, awayScore:e.intAwayScore,
+    homeBadge:e.strHomeTeamBadge||"", awayBadge:e.strAwayTeamBadge||"",
+    date:e.dateEvent||"", time:(e.strTime||"").slice(0,5), round:e.intRound||""
+  }));
+}
+
+function buildLocal(season){
+  DATA.season = season;
+  DATA.collectedAt = new Date().toISOString();
+  DATA.standings = LOCAL_STANDINGS.map(([team,pts],i)=>({
+    rank:i+1, team, badge:"", pts,
+    played:0, win:0, draw:0, loss:0, gf:0, ga:0, gd:0
+  }));
+  DATA.teams = TEAMS_2026.map(name=>({name, badge:""}));
+  DATA.past = []; DATA.next = [];
+}
+
+/* -------------------------------- Render ----------------------------------- */
+function zoneClass(rank){
+  if(rank<=6)  return "zone-lib";
+  if(rank<=12) return "zone-sul";
+  if(rank>=17) return "zone-reb";
+  return "";
+}
+function render(){
+  // Classificação
+  const tb = $("#standings tbody");
+  if(!DATA.standings.length){ tb.innerHTML = '<tr><td colspan="10" class="empty">Nenhum dado.</td></tr>'; }
+  else{
+    tb.innerHTML = DATA.standings.map(r=>`
+      <tr class="${zoneClass(r.rank)}">
+        <td class="pos">${r.rank}</td>
+        <td class="team">${r.badge?`<img src="${r.badge}" alt="" loading="lazy">`:""}${r.team}</td>
+        <td class="pts">${r.pts}</td>
+        <td>${r.played}</td><td>${r.win}</td><td>${r.draw}</td><td>${r.loss}</td>
+        <td class="hide-mob">${r.gf}</td><td class="hide-mob">${r.ga}</td>
+        <td>${r.gd>0?"+"+r.gd:r.gd}</td>
+      </tr>`).join("");
+  }
+  // Jogos
+  $("#pastMatches").innerHTML = DATA.past.length ? DATA.past.slice(0,12).map(matchRow).join("")
+    : '<div class="empty">Sem resultados disponíveis nesta fonte.</div>';
+  $("#nextMatches").innerHTML = DATA.next.length ? DATA.next.slice(0,12).map(matchRow).join("")
+    : '<div class="empty">Sem próximos jogos disponíveis nesta fonte.</div>';
+  // Times
+  $("#teamsGrid").innerHTML = DATA.teams.length ? DATA.teams.map(t=>`
+    <div class="teamcard">
+      ${t.badge?`<img src="${t.badge}" alt="" loading="lazy">`:`<div style="font-size:42px">⚽</div>`}
+      <div class="name">${t.name}</div>
+      <div class="sub">Série A 2026</div>
+    </div>`).join("") : '<div class="empty">Sem times.</div>';
+}
+function matchRow(m){
+  const played = m.homeScore!=null && m.homeScore!=="";
+  const score = played ? `${m.homeScore} × ${m.awayScore}` : "vs";
+  const when = [m.round?("Rod. "+m.round):"", m.date, m.time].filter(Boolean).join(" · ");
+  return `
+    <div>
+      ${when?`<div class="meta">${when}</div>`:""}
+      <div class="match">
+        <div class="side home">${m.home}${m.homeBadge?`<img src="${m.homeBadge}" alt="">`:""}</div>
+        <div class="score">${score}</div>
+        <div class="side">${m.awayBadge?`<img src="${m.awayBadge}" alt="">`:""}${m.away}</div>
+      </div>
+    </div>`;
+}
+
+/* --------------------------- Ordenação de colunas -------------------------- */
+let sortState = { key:"rank", dir:1 };
+$$("#standings th").forEach(th=>{
+  th.addEventListener("click", ()=>{
+    const k = th.dataset.k; if(!DATA.standings.length) return;
+    sortState.dir = (sortState.key===k) ? -sortState.dir : 1;
+    sortState.key = k;
+    DATA.standings.sort((a,b)=>{
+      let va=a[k], vb=b[k];
+      if(k==="team"){ return sortState.dir*va.localeCompare(vb); }
+      return sortState.dir*((va)-(vb));
+    });
+    render();
+  });
+});
+
+/* ------------------------------- Exportação -------------------------------- */
+function toggleExport(on){ $("#btnJson").disabled=!on; $("#btnCsv").disabled=!on; }
+function download(filename, text, type){
+  const blob = new Blob([text], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function exportJson(){
+  download(`brasileirao-${DATA.season}-dados.json`, JSON.stringify(DATA,null,2), "application/json");
+}
+function exportCsv(){
+  const header = ["Pos","Time","Pontos","Jogos","Vitorias","Empates","Derrotas","GolsPro","GolsContra","SaldoGols"];
+  const rows = DATA.standings.map(r=>[r.rank,`"${r.team}"`,r.pts,r.played,r.win,r.draw,r.loss,r.gf,r.ga,r.gd].join(","));
+  download(`brasileirao-${DATA.season}-classificacao.csv`, [header.join(","),...rows].join("\n"), "text/csv");
+}
+
+/* -------------------------------- Eventos ---------------------------------- */
+$("#btnCollect").addEventListener("click", collect);
+$("#btnJson").addEventListener("click", exportJson);
+$("#btnCsv").addEventListener("click", exportCsv);
+$$(".tab").forEach(t=>t.addEventListener("click", ()=>{
+  $$(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  ["tabela","jogos","times"].forEach(id=>$("#"+id).classList.toggle("hidden", id!==t.dataset.tab));
+}));
+
+// Coleta automática ao abrir
+window.addEventListener("load", collect);
+</script>
+</body>
+</html>

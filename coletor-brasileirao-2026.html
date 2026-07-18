@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang='pt-BR'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Bahia x Chapecoense — Dashboard</title><style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#0b0f16;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.4}
+    .wrap{max-width:820px;margin:0 auto;padding:16px}
+    .hero{background:linear-gradient(135deg,#161b22,#1c2740);border:1px solid #2b3444;border-radius:18px;padding:18px 20px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+    .hero .comp{color:#8b98a9;font-size:12px;letter-spacing:.6px;text-transform:uppercase;text-align:center}
+    .hero .teams{display:flex;align-items:center;justify-content:center;gap:16px;margin:8px 0 4px}
+    .hero .teams .t{font-size:clamp(19px,5vw,26px);font-weight:800}
+    .hero .teams .vs{color:#3fb0ff;font-size:14px;font-weight:700}
+    .hero .meta{color:#8b98a9;font-size:12.5px;text-align:center}
+    .hero .xg{display:flex;justify-content:center;gap:10px;margin-top:12px;align-items:center}
+    .hero .xg .box{background:#0d1117;border:1px solid #2b3444;border-radius:10px;padding:7px 14px;font-weight:800;font-size:17px}
+    .hero .xg .lab{color:#8b98a9;font-size:11px;font-weight:600}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    @media(min-width:680px){.grid.two{grid-template-columns:1fr 1fr}}
+    .card{background:#161b22;border:1px solid #2b3444;border-radius:14px;padding:14px 16px}
+    .card h3{margin:0 0 2px;font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .card .sub{color:#8b98a9;font-size:11.5px;margin-bottom:10px}
+    .badge{font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:.4px;white-space:nowrap}
+    .conf-alta{background:#1f9d5522;color:#39d98a;border:1px solid #1f9d5566}
+    .conf-med{background:#c98a1a22;color:#f0b429;border:1px solid #c98a1a66}
+    .conf-baixa{background:#c0392b22;color:#ff6b5e;border:1px solid #c0392b66}
+    .barrow{display:flex;align-items:center;gap:8px;margin:7px 0}
+    .bL{width:66px;font-size:12.5px;color:#c7d2de;flex:none;text-align:right}
+    .bR{font-size:12px;color:#8b98a9}
+    .track{position:relative;flex:1;background:#0d1117;border-radius:8px;overflow:hidden;border:1px solid #232c39}
+    .fill{height:100%;border-radius:8px;transition:width .4s}
+    .bpct{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11.5px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+    .fav{margin-top:8px;font-size:13px;color:#39d98a;font-weight:700}
+    .scores{font-size:13px;color:#c7d2de;margin-top:4px}
+    .forms{display:flex;flex-direction:column;gap:8px}
+    .frow{display:flex;align-items:center;gap:8px;font-size:13px}
+    .frow .fn{width:92px;font-weight:700}
+    .chip{width:22px;height:22px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
+    .chip.w{background:#1f9d55}.chip.d{background:#5a6472}.chip.l{background:#c0392b}.chip.q{background:#2b3444;color:#8b98a9}
+    .rating{margin-left:auto;background:#0d1117;border:1px solid #2b3444;border-radius:7px;padding:2px 8px;font-weight:800;font-size:12px}
+    table{width:100%;border-collapse:collapse;font-size:12.5px}
+    th,td{padding:7px 6px;text-align:center;border-bottom:1px solid #232c39}
+    th{color:#8b98a9;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px}
+    td.vm{text-align:left;font-weight:600}
+    .vpill{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:999px}
+    .cardline{margin:8px 0}
+    .cardline .cl{font-size:12.5px;font-weight:700;color:#c7d2de}
+    .ctwo{display:flex;gap:12px;margin-top:4px}
+    .cmini{flex:1}
+    .cmini>span{font-size:10px;color:#8b98a9;display:block;margin-bottom:2px}
+    .cmini .barrow{margin:0}.cmini .bL{width:0}
+    .ref{font-size:12.5px;color:#c7d2de}
+    .ref b{color:#f0b429}
+    .verdict{background:linear-gradient(135deg,#12261a,#0d1117);border:1px solid #1f9d5544;border-radius:14px;padding:14px 16px;margin-top:14px}
+    .verdict h3{margin:0 0 6px;font-size:15px;color:#39d98a}
+    .verdict p{margin:0;font-size:13.5px;color:#dbe4ee}
+    .tips{background:#161b22;border:1px solid #2b3444;border-radius:14px;padding:14px 16px 14px 16px;margin-top:14px}
+    .tips h3{margin:0 0 8px;font-size:14px;color:#3fb0ff}
+    .tips ul{margin:0;padding-left:18px}
+    .tips li{font-size:12.8px;color:#c7d2de;margin:5px 0}
+    .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#8b98a9;margin-top:12px;justify-content:center}
+    .legend .g{display:inline-flex;align-items:center;gap:6px}
+    .gradbar{width:80px;height:10px;border-radius:6px;background:linear-gradient(90deg,hsl(0 68% 45%),hsl(62 68% 45%),hsl(125 68% 45%))}
+    footer{text-align:center;color:#67707f;font-size:11px;margin:18px 0 8px}
+    </style></head><body>
+    <div class="wrap">
+      <div class="hero">
+        <div class="comp">Brasileirão Série A · Rodada 4</div>
+        <div class="teams"><span class="t">Bahia</span><span class="vs">VS</span><span class="t">Chapecoense</span></div>
+        <div class="meta">Arena Fonte Nova, Salvador · 17/07/2026 · 19:30</div>
+        <div class="xg">
+          <div><div class="lab">xG Bahia</div><div class="box">2.37</div></div>
+          <span style="color:#8b98a9">×</span>
+          <div><div class="lab">xG Chapecoense</div><div class="box">0.80</div></div>
+          <div><div class="lab">Total</div><div class="box" style="color:#3fb0ff">3.17</div></div>
+        </div>
+      </div>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>① Resultado (1x2) <span class="badge conf-alta">CONFIANÇA ALTA</span></h3>
+          <div class="sub">modelo combinado com o mercado</div>
+          <div class="barrow"><span class="bL">Bahia</span><div class="track" style="height:22px"><div class="fill" style="width:69.6%;background:hsl(87 68% 45%)"></div><span class="bpct">70%</span></div></div>
+          <div class="barrow"><span class="bL">Empate</span><div class="track" style="height:22px"><div class="fill" style="width:17.7%;background:hsl(22 68% 45%)"></div><span class="bpct">18%</span></div></div>
+          <div class="barrow"><span class="bL">Chapecoense</span><div class="track" style="height:22px"><div class="fill" style="width:12.7%;background:hsl(16 68% 45%)"></div><span class="bpct">13%</span></div></div>
+          <div class="fav">★ Favorito: Bahia</div>
+        </div>
+        <div class="card">
+          <h3>② Ambos Marcam <span class="badge conf-med">CONFIANÇA MÉDIA</span></h3>
+          <div class="sub">modelo e mercado convergiram (~51/52%)</div>
+          <div class="barrow"><span class="bL">Sim</span><div class="track" style="height:22px"><div class="fill" style="width:51.0%;background:hsl(64 68% 45%)"></div><span class="bpct">51%</span></div></div>
+          <div class="barrow"><span class="bL">Não</span><div class="track" style="height:22px"><div class="fill" style="width:49.0%;background:hsl(61 68% 45%)"></div><span class="bpct">49%</span></div></div>
+          <div style="height:8px"></div>
+          <h3 style="font-size:14px">③ Gols</h3>
+          <div class="barrow"><span class="bL">Over 1.5</span><div class="track" style="height:16px"><div class="fill" style="width:82.3%;background:hsl(103 68% 45%)"></div><span class="bpct">82%</span></div></div>
+          <div class="barrow"><span class="bL">Over 2.5</span><div class="track" style="height:16px"><div class="fill" style="width:61.3%;background:hsl(77 68% 45%)"></div><span class="bpct">61%</span></div></div>
+          <div class="barrow"><span class="bL">Under 2.5</span><div class="track" style="height:16px"><div class="fill" style="width:38.7%;background:hsl(48 68% 45%)"></div><span class="bpct">39%</span></div></div>
+          <div class="scores">Placares: 2-0 <b>12%</b> · 1-0 <b>10%</b> · 2-1 <b>9%</b> · 3-0 <b>9%</b> · 1-1 <b>8%</b></div>
+        </div>
+      </div>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>Forma recente (últimos 5)</h3>
+          <div class="sub">V verde · E cinza · D vermelho</div>
+          <div class="forms">
+            <div class="frow"><span class="fn">Bahia</span><span class="chip d">E</span><span class="chip l">D</span><span class="chip d">E</span><span class="chip l">D</span><span class="chip w">V</span><span class="rating">6.84</span></div>
+            <div class="frow"><span class="fn">Chapecoense</span><span class="chip l">D</span><span class="chip d">E</span><span class="chip l">D</span><span class="chip l">D</span><span class="chip l">D</span><span class="rating">6.68</span></div>
+          </div>
+          <div style="height:10px"></div>
+          <div class="ref">🧑‍⚖️ Árbitro: <b>Paulo Cesar Zanovelli da Silva</b><br>
+          Média por jogo: <b>5,54</b> amarelos · <b>0,42</b> vermelhos (cartão acima da média da liga)</div>
+        </div>
+        <div class="card">
+          <h3>④ Cartões (totais) <span class="badge conf-baixa">CONFIANÇA BAIXA</span></h3>
+          <div class="sub">expectativa ~5 · sem histórico por time (leitura de árbitro/contexto)</div>
+          <div class="cardline"><span class="cl">Over 3.5</span><div class="ctwo"><div class="cmini"><span>mercado</span><div class="barrow"><span class="bL"></span><div class="track" style="height:16px"><div class="fill" style="width:69.0%;background:hsl(86 68% 45%)"></div><span class="bpct">69%</span></div></div></div><div class="cmini"><span>modelo</span><div class="barrow"><span class="bL"></span><div class="track" style="height:16px"><div class="fill" style="width:75.0%;background:hsl(94 68% 45%)"></div><span class="bpct">75%</span></div></div></div></div></div><div class="cardline"><span class="cl">Over 4.5</span><div class="ctwo"><div class="cmini"><span>mercado</span><div class="barrow"><span class="bL"></span><div class="track" style="height:16px"><div class="fill" style="width:54.0%;background:hsl(68 68% 45%)"></div><span class="bpct">54%</span></div></div></div><div class="cmini"><span>modelo</span><div class="barrow"><span class="bL"></span><div class="track" style="height:16px"><div class="fill" style="width:58.0%;background:hsl(72 68% 45%)"></div><span class="bpct">58%</span></div></div></div></div></div><div class="cardline"><span class="cl">Over 5.5</span><div class="ctwo"><div class="cmini"><span>mercado</span><div class="barrow"><span class="bL"></span><div class="track" style="height:16px"><div class="fill" style="width:37.0%;background:hsl(46 68% 45%)"></div><span class="bpct">37%</span></div></div></div><div class="cmini"><span>modelo</span><div class="barrow"><span class="bL"></span><div class="track" style="height:16px"><div class="fill" style="width:40.0%;background:hsl(50 68% 45%)"></div><span class="bpct">40%</span></div></div></div></div></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Valor vs. odds oferecidas</h3>
+        <div class="sub">“Precisa” = probabilidade mínima para a odd pagar (breakeven) · “Estimo” = minha probabilidade</div>
+        <table>
+          <tr><th>Mercado</th><th>Odd</th><th>Precisa</th><th>Estimo</th><th>Veredito</th></tr>
+          <tr><td class="vm">Vitória Bahia (1x2)</td><td>1.40</td><td>71%</td><td>70%</td><td><span class="vpill" style="background:#c98a1a22;color:#c98a1a;border:1px solid #c98a1a55">Justo</span></td></tr><tr><td class="vm">Dupla: Bahia ou Empate</td><td>1.11</td><td>90%</td><td>88%</td><td><span class="vpill" style="background:#c98a1a22;color:#c98a1a;border:1px solid #c98a1a55">Justo</span></td></tr><tr><td class="vm">Over 2.5 gols</td><td>1.60</td><td>63%</td><td>60%</td><td><span class="vpill" style="background:#c0392b22;color:#c0392b;border:1px solid #c0392b55">-EV</span></td></tr><tr><td class="vm">Ambos Marcam - Sim</td><td>1.80</td><td>56%</td><td>51%</td><td><span class="vpill" style="background:#c0392b22;color:#c0392b;border:1px solid #c0392b55">Sem valor</span></td></tr><tr><td class="vm">Ambos Marcam - Não</td><td>1.95</td><td>51%</td><td>49%</td><td><span class="vpill" style="background:#c98a1a22;color:#c98a1a;border:1px solid #c98a1a55">Justo</span></td></tr><tr><td class="vm">Over 4.5 cartões</td><td>1.72</td><td>58%</td><td>58%</td><td><span class="vpill" style="background:#c98a1a22;color:#c98a1a;border:1px solid #c98a1a55">Na trave</span></td></tr><tr><td class="vm">Over 5.5 cartões</td><td>2.50</td><td>40%</td><td>40%</td><td><span class="vpill" style="background:#c98a1a22;color:#c98a1a;border:1px solid #c98a1a55">Na trave</span></td></tr><tr><td class="vm">Under 5.5 cartões</td><td>1.50</td><td>67%</td><td>62%</td><td><span class="vpill" style="background:#c0392b22;color:#c0392b;border:1px solid #c0392b55">-EV</span></td></tr>
+        </table>
+      </div>
+
+      <div class="verdict">
+        <h3>🎯 Veredito</h3>
+        <p>Favoritismo forte da Bahia em casa (70%), com os dois times completos e a Chapecoense em péssima fase (0 vitórias em 5). Expectativa de bastante gol (xG total 3.2) e ~5 cartões, com a Chape puxando a conta. Nas odds atuais nenhuma linha oferece vantagem clara — as mais próximas do justo são a vitória da Bahia e o &#x27;ambos não&#x27;. O 1x2 é a leitura mais confiável; cartões, a menos confiável.</p>
+      </div>
+
+      <div class="tips">
+        <h3>💡 Dicas de leitura</h3>
+        <ul><li>As barras seguem um degradê: vermelho = baixa probabilidade, âmbar = ~50%, verde = alta. Quanto mais verde e mais cheia, mais provável.</li><li>Confie no selo de confiança: 1x2 (ALTA) empata com o mercado; Ambos Marcam (MÉDIA) teve convergência modelo×mercado; Cartões (BAIXA) é leitura de árbitro, sem histórico por time.</li><li>&#x27;Precisa&#x27; vs &#x27;Estimo&#x27; na tabela de valor: se &#x27;Estimo&#x27; for MAIOR que &#x27;Precisa&#x27;, há valor na aposta; se for menor, a odd está cara.</li><li>Nenhuma linha aqui tem &#x27;Estimo&#x27; claramente acima de &#x27;Precisa&#x27; — ou seja, é um jogo sem aposta de valor óbvio, mais pra leitura do que pra fichar.</li><li>Cartões giram em torno de 5; a Chapecoense, correndo atrás e se defendendo, tende a ser o lado mais carimbado.</li><li>Me mande o próximo jogo (e, se tiver, odds/escalação/árbitro) que o dashboard sai no mesmo formato.</li></ul>
+      </div>
+
+      <div class="legend">
+        <span class="g">Escala de probabilidade: <span class="gradbar"></span> 0% → 100%</span>
+      </div>
+      <footer>Gerado pelo motor Dixon-Coles (base 2012–2026) + odds de mercado · Arena Fonte Nova, Salvador · 17/07/2026 · 19:30</footer>
+    </div>
+    </body></html>
