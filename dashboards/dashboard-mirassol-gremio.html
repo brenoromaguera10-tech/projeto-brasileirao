@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang='pt-BR'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Mirassol x Grêmio — Dashboard</title><style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#080807;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.4}
+    .wrap{max-width:820px;margin:0 auto;padding:16px}
+    .hero{background:linear-gradient(135deg,#14120d,#1c1810);border:1px solid #332d1c;border-radius:18px;padding:18px 20px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+    .brandbar{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #332d1c}
+    .brandbar .bw{font-weight:800;font-size:15px;letter-spacing:3px;color:#e5c15a}
+    .brandbar .bw b{color:#d7dce4}
+    .hero .teams .vs{background:linear-gradient(180deg,#f9e79f,#e5c15a,#b8860b);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+    .hero .comp{color:#a99e86;font-size:12px;letter-spacing:.6px;text-transform:uppercase;text-align:center}
+    .hero .teams{display:flex;align-items:center;justify-content:center;gap:16px;margin:8px 0 4px}
+    .hero .teams .t{font-size:clamp(19px,5vw,26px);font-weight:800}
+    .hero .teams .vs{color:#e5c15a;font-size:14px;font-weight:700}
+    .hero .meta{color:#a99e86;font-size:12.5px;text-align:center}
+    .hero .xg{display:flex;justify-content:center;gap:10px;margin-top:12px;align-items:center}
+    .hero .xg .box{background:#0d0b07;border:1px solid #332d1c;border-radius:10px;padding:7px 14px;font-weight:800;font-size:17px}
+    .hero .xg .lab{color:#a99e86;font-size:11px;font-weight:600}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    @media(min-width:680px){.grid.two{grid-template-columns:1fr 1fr}}
+    .card{background:#14120d;border:1px solid #332d1c;border-radius:14px;padding:14px 16px}
+    .card h3{margin:0 0 2px;font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .card .sub{color:#a99e86;font-size:11.5px;margin-bottom:10px}
+    .badge{font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:.4px;white-space:nowrap}
+    .conf-alta{background:#1f9d5522;color:#39d98a;border:1px solid #1f9d5566}
+    .conf-med{background:#c98a1a22;color:#f0b429;border:1px solid #c98a1a66}
+    .conf-baixa{background:#c0392b22;color:#ff6b5e;border:1px solid #c0392b66}
+    .barrow{display:flex;align-items:center;gap:8px;margin:7px 0}
+    .bL{width:66px;font-size:12.5px;color:#d8cfb8;flex:none;text-align:right}
+    .bR{font-size:12px;color:#a99e86}
+    .track{position:relative;flex:1;background:#0d0b07;border-radius:8px;overflow:hidden;border:1px solid #332d1c}
+    .fill{height:100%;border-radius:8px;transition:width .4s}
+    .bpct{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11.5px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+    .fav{margin-top:8px;font-size:13px;color:#39d98a;font-weight:700}
+    .scores{font-size:13px;color:#d8cfb8;margin-top:4px}
+    .forms{display:flex;flex-direction:column;gap:8px}
+    .frow{display:flex;align-items:center;gap:8px;font-size:13px}
+    .frow .fn{width:92px;font-weight:700}
+    .chip{width:22px;height:22px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
+    .chip.w{background:#1f9d55}.chip.d{background:#5a6472}.chip.l{background:#c0392b}.chip.q{background:#332d1c;color:#a99e86}
+    .rating{margin-left:auto;background:#0d0b07;border:1px solid #332d1c;border-radius:7px;padding:2px 8px;font-weight:800;font-size:12px}
+    table{width:100%;border-collapse:collapse;font-size:12.5px}
+    th,td{padding:7px 6px;text-align:center;border-bottom:1px solid #332d1c}
+    th{color:#a99e86;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px}
+    td.vm{text-align:left;font-weight:600}
+    .vpill{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:999px}
+    .cardline{margin:8px 0}
+    .cardline .cl{font-size:12.5px;font-weight:700;color:#d8cfb8}
+    .ctwo{display:flex;gap:12px;margin-top:4px}
+    .cmini{flex:1}
+    .cmini>span{font-size:10px;color:#a99e86;display:block;margin-bottom:2px}
+    .cmini .barrow{margin:0}.cmini .bL{width:0}
+    .ref{font-size:12.5px;color:#d8cfb8}
+    .ref b{color:#f0b429}
+    .verdict{background:linear-gradient(135deg,#12261a,#0d0b07);border:1px solid #1f9d5544;border-radius:14px;padding:14px 16px;margin-top:14px}
+    .verdict h3{margin:0 0 6px;font-size:15px;color:#39d98a}
+    .verdict p{margin:0;font-size:13.5px;color:#dbe4ee}
+    .tips{background:#14120d;border:1px solid #332d1c;border-radius:14px;padding:14px 16px 14px 16px;margin-top:14px}
+    .tips h3{margin:0 0 8px;font-size:14px;color:#e5c15a}
+    .tips ul{margin:0;padding-left:18px}
+    .tips li{font-size:12.8px;color:#d8cfb8;margin:5px 0}
+    .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#a99e86;margin-top:12px;justify-content:center}
+    .legend .g{display:inline-flex;align-items:center;gap:6px}
+    .gradbar{width:80px;height:10px;border-radius:6px;background:linear-gradient(90deg,hsl(0 60% 45%),hsl(96 55% 45%),hsl(140 55% 40%))}
+    footer{text-align:center;color:#6f6551;font-size:11px;margin:18px 0 8px}
+    </style></head><body>
+    <div class="wrap">
+      <div class="hero">
+        <div class="brandbar">
+          <svg width="30" height="30" viewBox="0 0 200 200"><defs><linearGradient id="agold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f9e79f"/><stop offset=".5" stop-color="#e5c15a"/><stop offset="1" stop-color="#a97b16"/></linearGradient></defs><circle cx="100" cy="96" r="74" stroke="url(#agold)" stroke-width="5" fill="none" opacity=".8"/><path d="M58 168 L100 52 L142 168" stroke="url(#agold)" stroke-width="18" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M78 126 L122 126" stroke="url(#agold)" stroke-width="16" stroke-linecap="round"/><path d="M74 150 L104 96 L128 116 L166 46" stroke="url(#agold)" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M166 46 l-14 3 l7 -11 z" fill="url(#agold)"/></svg>
+          <span class="bw"><b>ALPHA</b> TRADER</span>
+        </div>
+        <div class="comp">Brasileirão Série A · Rodada 19</div>
+        <div class="teams"><span class="t">Mirassol</span><span class="vs">VS</span><span class="t">Grêmio</span></div>
+        <div class="meta">Estádio Maião, Mirassol · 17/07/2026 · 20:00</div>
+        <div class="xg">
+          <div><div class="lab">xG Mirassol</div><div class="box">1.70</div></div>
+          <span style="color:#a99e86">×</span>
+          <div><div class="lab">xG Grêmio</div><div class="box">0.96</div></div>
+          <div><div class="lab">Total</div><div class="box" style="color:#e5c15a">2.66</div></div>
+        </div>
+      </div>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>① Resultado (1x2) <span class="badge conf-alta">CONFIANÇA ALTA</span></h3>
+          <div class="sub">blend corrigido 85% mercado / 15% modelo → 47% (era 50% no 50/50 antigo)</div>
+          <div class="barrow"><span class="bL">Mirassol</span><div class="track" style="height:22px"><div class="fill" style="width:47.3%;background:hsl(91 60% 45%)"></div><span class="bpct">47%</span></div></div>
+          <div class="barrow"><span class="bL">Empate</span><div class="track" style="height:22px"><div class="fill" style="width:29.4%;background:hsl(56 60% 45%)"></div><span class="bpct">29%</span></div></div>
+          <div class="barrow"><span class="bL">Grêmio</span><div class="track" style="height:22px"><div class="fill" style="width:23.3%;background:hsl(45 60% 45%)"></div><span class="bpct">23%</span></div></div>
+          <div class="fav">★ Favorito: Mirassol</div>
+        </div>
+        <div class="card">
+          <h3>② Ambos Marcam <span class="badge conf-med">CONFIANÇA MÉDIA</span></h3>
+          <div class="sub">modelo 51% x mercado 44% — modelo mais aberto</div>
+          <div class="barrow"><span class="bL">Sim</span><div class="track" style="height:22px"><div class="fill" style="width:51.1%;background:hsl(97 60% 45%)"></div><span class="bpct">51%</span></div></div>
+          <div class="barrow"><span class="bL">Não</span><div class="track" style="height:22px"><div class="fill" style="width:48.9%;background:hsl(94 60% 45%)"></div><span class="bpct">49%</span></div></div>
+          <div style="height:8px"></div>
+          <h3 style="font-size:14px">③ Gols</h3>
+          <div class="barrow"><span class="bL">Over 1.5</span><div class="track" style="height:16px"><div class="fill" style="width:74.2%;background:hsl(117 60% 45%)"></div><span class="bpct">74%</span></div></div>
+          <div class="barrow"><span class="bL">Over 2.5</span><div class="track" style="height:16px"><div class="fill" style="width:49.7%;background:hsl(95 60% 45%)"></div><span class="bpct">50%</span></div></div>
+          <div class="barrow"><span class="bL">Under 2.5</span><div class="track" style="height:16px"><div class="fill" style="width:50.3%;background:hsl(96 60% 45%)"></div><span class="bpct">50%</span></div></div>
+          <div class="scores">Placares: 1-0 <b>12%</b> · 1-1 <b>11%</b> · 2-0 <b>10%</b> · 2-1 <b>10%</b> · 0-1 <b>7%</b></div>
+        </div>
+      </div>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>Forma recente (últimos 5)</h3>
+          <div class="sub">V verde · E cinza · D vermelho</div>
+          <div class="forms">
+            <div class="frow"><span class="fn">Mirassol</span><span class="chip q">?</span><span class="chip q">?</span><span class="chip q">?</span><span class="chip q">?</span><span class="chip q">?</span><span class="rating">—</span></div>
+            <div class="frow"><span class="fn">Grêmio</span><span class="chip q">?</span><span class="chip q">?</span><span class="chip q">?</span><span class="chip q">?</span><span class="chip q">?</span><span class="rating">—</span></div>
+          </div>
+          <div style="height:10px"></div>
+          <div class="ref">🧑‍⚖️ Árbitro: <b>não informado</b><br>
+          Média por jogo: <b>—</b> amarelos · <b>—</b> vermelhos (mande o árbitro p/ cartões)</div>
+        </div>
+        <div class="card">
+          <h3>④ Cartões (totais) <span class="badge conf-baixa">CONFIANÇA BAIXA</span></h3>
+          <div class="sub">aguardando árbitro e odds de cartão</div>
+          
+        </div>
+      </div>
+
+      
+      <div class="grid two" style="margin-top:14px">
+        <div class="card">
+          <h3>⑤ Chutes (por time) <span class="badge conf-med">CONFIANÇA MÉDIA</span></h3>
+          <div class="sub">taxas reais 2026 (aiscore) + mando · v1 não modela defesa do adversário</div>
+          <div class="barrow"><span class="bL">Mirassol</span><div class="track" style="height:18px"><div class="fill" style="width:76%;background:hsl(119 60% 45%)"></div><span class="bpct">15.1</span></div></div>
+          <div class="barrow"><span class="bL">Grêmio</span><div class="track" style="height:18px"><div class="fill" style="width:52%;background:hsl(98 60% 45%)"></div><span class="bpct">10.4</span></div></div>
+          <div class="scores">Total esperado: <b>25.5</b> · 1º tempo aprox: Mirassol 6.8 / Grêmio 4.7</div>
+        </div>
+        <div class="card">
+          <h3>⑥ Escanteios (total) <span class="badge conf-med">CONFIANÇA MÉDIA</span></h3>
+          <div class="sub">taxas reais 2026 (apwin) · total esperado ~9.6 (Mirassol 5.6 / Grêmio 4.0)</div>
+          <div class="barrow"><span class="bL">Over 7.5</span><div class="track" style="height:16px"><div class="fill" style="width:74.0%;background:hsl(117 60% 45%)"></div><span class="bpct">74%</span></div></div><div class="barrow"><span class="bL">Over 8.5</span><div class="track" style="height:16px"><div class="fill" style="width:61.8%;background:hsl(106 60% 45%)"></div><span class="bpct">62%</span></div></div><div class="barrow"><span class="bL">Over 9.5</span><div class="track" style="height:16px"><div class="fill" style="width:48.9%;background:hsl(94 60% 45%)"></div><span class="bpct">49%</span></div></div><div class="barrow"><span class="bL">Over 10.5</span><div class="track" style="height:16px"><div class="fill" style="width:36.5%;background:hsl(70 60% 45%)"></div><span class="bpct">37%</span></div></div><div class="barrow"><span class="bL">Over 11.5</span><div class="track" style="height:16px"><div class="fill" style="width:25.7%;background:hsl(49 60% 45%)"></div><span class="bpct">26%</span></div></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Valor vs. odds oferecidas</h3>
+        <div class="sub">“Precisa” = probabilidade mínima para a odd pagar (breakeven) · “Estimo” = minha probabilidade</div>
+        <table>
+          <tr><th>Mercado</th><th>Odd</th><th>Precisa</th><th>Estimo</th><th>Veredito</th></tr>
+          <tr><td class="vm">Vitória Mirassol (1x2)</td><td>2.05</td><td>49%</td><td>50%</td><td><span class="vpill" style="background:#a99e8622;color:#a99e86;border:1px solid #a99e8655">Cautela</span></td></tr><tr><td class="vm">Empate</td><td>3.10</td><td>32%</td><td>27%</td><td><span class="vpill" style="background:#c0392b22;color:#c0392b;border:1px solid #c0392b55">-EV</span></td></tr><tr><td class="vm">Vitória Grêmio</td><td>4.00</td><td>25%</td><td>23%</td><td><span class="vpill" style="background:#c98a1a22;color:#c98a1a;border:1px solid #c98a1a55">Justo</span></td></tr><tr><td class="vm">Ambos Marcam - Sim</td><td>2.10</td><td>48%</td><td>48%</td><td><span class="vpill" style="background:#c98a1a22;color:#c98a1a;border:1px solid #c98a1a55">Justo</span></td></tr><tr><td class="vm">Ambos Marcam - Não</td><td>1.66</td><td>60%</td><td>52%</td><td><span class="vpill" style="background:#c0392b22;color:#c0392b;border:1px solid #c0392b55">-EV</span></td></tr><tr><td class="vm">Over 2.5 gols</td><td>2.62</td><td>38%</td><td>43%</td><td><span class="vpill" style="background:#a99e8622;color:#a99e86;border:1px solid #a99e8655">Cautela</span></td></tr><tr><td class="vm">Under 2.5 gols</td><td>1.50</td><td>67%</td><td>57%</td><td><span class="vpill" style="background:#c0392b22;color:#c0392b;border:1px solid #c0392b55">-EV</span></td></tr>
+        </table>
+      </div>
+
+      <div class="verdict">
+        <h3>🎯 Veredito</h3>
+        <p>ATENÇÃO: este é o jogo em que MODELO e MERCADO mais discordam da nossa série. Meu modelo vê Mirassol favorito e jogo aberto (Mir 55%, Over 2.5 50%); o mercado vê um jogo MUITO mais truncado e equilibrado (Mir só 46%, Under 2.5 em 64%, BTTS-Não). Escalações confirmadas e completas dos dois lados. O ponto honesto: essa divergência quase certamente vem de uma FRAQUEZA do meu modelo aqui — ele ainda carrega a super-temporada 2025 do Mirassol, enquanto na tabela de 2026 o Mirassol vinha lá embaixo (16º). Ou seja, o mercado provavelmente está mais certo, e eu DEFIRO a ele: jogo tende a ser fechado e de poucos gols. Não trataria o &#x27;valor&#x27; que meu modelo aponta (Mirassol / Over) como valor real — é miragem do modelo super-avaliar o Mirassol.</p>
+      </div>
+
+      <div class="tips">
+        <h3>💡 Dicas de leitura</h3>
+        <ul><li>Leitura honesta: quando modelo e mercado divergem MUITO (como aqui), o mercado costuma vencer. Este é um caso desses.</li><li>A causa provável: o modelo pondera a excelente campanha 2025 do Mirassol, mas em 2026 eles vinham em 16º. Ele super-avalia o mandante.</li><li>Por isso marquei Mirassol e Over como &#x27;Cautela&#x27;, não &#x27;Valor&#x27; — o número do modelo está inflado nesse jogo específico.</li><li>Se for seguir alguém, siga o mercado: jogo truncado, tendência de Under 2.5 e possível BTTS-Não.</li><li>Falta o árbitro pra fechar os cartões. Mas o recado principal do jogo é a divergência — e a humildade de reconhecer o limite do modelo.</li></ul>
+      </div>
+
+      <div class="legend">
+        <span class="g">Escala de probabilidade: <span class="gradbar"></span> 0% → 100%</span>
+      </div>
+      <footer><b style="color:#e5c15a;letter-spacing:2px">ALPHA TRADER</b> · probabilidade, não garantia · +18, aposte com responsabilidade<br>motor Dixon-Coles (2012–2026) + odds de mercado · Estádio Maião, Mirassol · 17/07/2026 · 20:00</footer>
+    </div>
+    </body></html>

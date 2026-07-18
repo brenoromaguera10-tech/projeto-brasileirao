@@ -1,52 +1,43 @@
 from dashboard import build
 ctx = {
-  "slug":"fluminense-bragantino",
-  "home":"Fluminense","away":"RB Bragantino",
-  "home_key":"Fluminense","away_key":"Bragantino",
+  "slug":"mirassol-gremio",
+  "home":"Mirassol","away":"Grêmio",
+  "home_key":"Mirassol","away_key":"Gremio",
   "comp":"Brasileirão Série A · Rodada 19",
-  "meta":"Maracanã, Rio de Janeiro · 17/07/2026 · 20:00",
-  "odds_1x2":(1.90,3.40,4.33),
-  "sub_1x2":"modelo 53% + mercado 50% = blend 52%",
-  "sub_btts":"modelo 50% e mercado 50% — convergência total",
+  "meta":"Estádio Maião, Mirassol · 17/07/2026 · 20:00",
+  "odds_1x2":(2.05,3.10,4.00),
+  "stats":__import__("stats_model").estimate("Mirassol","Gremio"),
+  "sub_1x2":"blend corrigido 85% mercado / 15% modelo → 47% (era 50% no 50/50 antigo)",
+  "sub_btts":"modelo 51% x mercado 44% — modelo mais aberto",
   "form_home":["?","?","?","?","?"],
   "form_away":["?","?","?","?","?"],
   "rating_home":"—","rating_away":"—",
-  "ref":"Davi de Oliveira Lacerda","ref_yellow":"5,18","ref_red":"0,18",
-  "ref_note":"(abaixo do juiz do Bahia; leve viés pró-under de cartões)",
-  "cards":{
-     "exp":"5,3",
-     "sub":"árbitro Lacerda (5,18 am) — meu modelo fica ABAIXO do mercado: leve viés pró-under",
-     "linhas":{
-        "Over 3.5":(0.78,0.77),
-        "Over 4.5":(0.65,0.61),
-        "Over 5.5":(0.50,0.44),
-        "Over 6.5":(0.35,0.28),
-     }
-  },
+  "ref":"não informado","ref_yellow":"—","ref_red":"—",
+  "ref_note":"(mande o árbitro p/ cartões)",
+  "cards":{"exp":"—","sub":"aguardando árbitro e odds de cartão","linhas":{}},
   "value":[
-    {"mercado":"Vitória Fluminense (1x2)","odd":"1.90","precisa":"53%","estimo":"52%","veredito":"Justo"},
-    {"mercado":"Empate","odd":"3.40","precisa":"29%","estimo":"27%","veredito":"-EV"},
-    {"mercado":"Vitória Bragantino","odd":"4.33","precisa":"23%","estimo":"22%","veredito":"Justo"},
-    {"mercado":"Ambos Marcam - Sim","odd":"1.90","precisa":"53%","estimo":"50%","veredito":"Justo"},
-    {"mercado":"Over 2.5 gols","odd":"2.05","precisa":"49%","estimo":"45%","veredito":"-EV"},
-    {"mercado":"Under 2.5 gols","odd":"1.75","precisa":"57%","estimo":"55%","veredito":"Justo"},
-    {"mercado":"Under 5.5 cartões","odd":"1.83","precisa":"55%","estimo":"56%","veredito":"Valor"},
-    {"mercado":"Over 5.5 cartões","odd":"1.83","precisa":"55%","estimo":"44%","veredito":"-EV"},
-    {"mercado":"Over 4.5 cartões","odd":"1.44","precisa":"69%","estimo":"61%","veredito":"-EV"},
+    {"mercado":"Vitória Mirassol (1x2)","odd":"2.05","precisa":"49%","estimo":"50%","veredito":"Cautela"},
+    {"mercado":"Empate","odd":"3.10","precisa":"32%","estimo":"27%","veredito":"-EV"},
+    {"mercado":"Vitória Grêmio","odd":"4.00","precisa":"25%","estimo":"23%","veredito":"Justo"},
+    {"mercado":"Ambos Marcam - Sim","odd":"2.10","precisa":"48%","estimo":"48%","veredito":"Justo"},
+    {"mercado":"Ambos Marcam - Não","odd":"1.66","precisa":"60%","estimo":"52%","veredito":"-EV"},
+    {"mercado":"Over 2.5 gols","odd":"2.62","precisa":"38%","estimo":"43%","veredito":"Cautela"},
+    {"mercado":"Under 2.5 gols","odd":"1.50","precisa":"67%","estimo":"57%","veredito":"-EV"},
   ],
-  "verdict":("ANÁLISE COMPLETA (times completos, jogo já rolando 0-0). Fluminense favorito moderado "
-    "no Maracanã: blend modelo+mercado dá 52% (empate 27%, Bragantino 22%). BTTS e Over/Under batem "
-    "no ponto com o mercado, inclinando levemente pro Under 2.5. A NOVIDADE são os cartões: com o "
-    "árbitro Lacerda (5,18 amarelos/jogo, abaixo do juiz do Bahia), minha estimativa (~5,3) fica "
-    "ABAIXO do que o mercado precifica (~5,5) — o único ponto do jogo com viés claro, levemente "
-    "pró-UNDER de cartões. Under 5.5 @1.83 é a linha mais próxima de valor (est. 56% vs 55% de "
-    "equilíbrio). No resto, mercado eficiente: jogo mais de leitura que de fichar."),
+  "verdict":("ATENÇÃO: este é o jogo em que MODELO e MERCADO mais discordam da nossa série. Meu modelo "
+    "vê Mirassol favorito e jogo aberto (Mir 55%, Over 2.5 50%); o mercado vê um jogo MUITO mais "
+    "truncado e equilibrado (Mir só 46%, Under 2.5 em 64%, BTTS-Não). Escalações confirmadas e "
+    "completas dos dois lados. O ponto honesto: essa divergência quase certamente vem de uma FRAQUEZA "
+    "do meu modelo aqui — ele ainda carrega a super-temporada 2025 do Mirassol, enquanto na tabela de "
+    "2026 o Mirassol vinha lá embaixo (16º). Ou seja, o mercado provavelmente está mais certo, e eu "
+    "DEFIRO a ele: jogo tende a ser fechado e de poucos gols. Não trataria o 'valor' que meu modelo "
+    "aponta (Mirassol / Over) como valor real — é miragem do modelo super-avaliar o Mirassol."),
   "tips":[
-    "Barras em degradê: vermelho = pouco provável, âmbar ≈ 50%, verde = muito provável.",
-    "1x2, BTTS e Over/Under: modelo e mercado colados — leituras confiáveis, mas sem valor (odds justas).",
-    "ÚNICO viés do jogo: cartões. O árbitro Lacerda é menos cartão que a média, então o mercado (~5,5) parece um fio alto → leve valor no UNDER 5.5.",
-    "Cuidado: cartões ainda é confiança BAIXA (ancorado no árbitro, sem histórico por time). É um lean pequeno, não uma cravada.",
-    "Resumo pra fichar: nenhuma aposta forte; se for buscar algo, Under 5.5 cartões é a única com 'Estimo' acima do 'Precisa'.",
+    "Leitura honesta: quando modelo e mercado divergem MUITO (como aqui), o mercado costuma vencer. Este é um caso desses.",
+    "A causa provável: o modelo pondera a excelente campanha 2025 do Mirassol, mas em 2026 eles vinham em 16º. Ele super-avalia o mandante.",
+    "Por isso marquei Mirassol e Over como 'Cautela', não 'Valor' — o número do modelo está inflado nesse jogo específico.",
+    "Se for seguir alguém, siga o mercado: jogo truncado, tendência de Under 2.5 e possível BTTS-Não.",
+    "Falta o árbitro pra fechar os cartões. Mas o recado principal do jogo é a divergência — e a humildade de reconhecer o limite do modelo.",
   ],
 }
 print("OK:", build(ctx))

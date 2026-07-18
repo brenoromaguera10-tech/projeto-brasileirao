@@ -1,48 +1,52 @@
 from dashboard import build
 ctx = {
-  "slug":"bahia-chapecoense",
-  "home":"Bahia","away":"Chapecoense",
-  "home_key":"Bahia","away_key":"Chapecoense",
-  "comp":"Brasileirão Série A · Rodada 4",
-  "meta":"Arena Fonte Nova, Salvador · 17/07/2026 · 19:30",
-  "odds_1x2":(1.40,5.00,6.50),
-  "form_home":["D","L","D","L","W"],
-  "form_away":["L","D","L","L","L"],
-  "rating_home":"6.84","rating_away":"6.68",
-  "ref":"Paulo Cesar Zanovelli da Silva",
-  "ref_yellow":"5,54","ref_red":"0,42",
-  "ref_note":"(cartão acima da média da liga)",
+  "slug":"fluminense-bragantino",
+  "home":"Fluminense","away":"RB Bragantino",
+  "home_key":"Fluminense","away_key":"Bragantino",
+  "comp":"Brasileirão Série A · Rodada 19",
+  "meta":"Maracanã, Rio de Janeiro · 17/07/2026 · 20:00",
+  "odds_1x2":(1.90,3.40,4.33),
+  "sub_1x2":"modelo 53% + mercado 50% = blend 52%",
+  "sub_btts":"modelo 50% e mercado 50% — convergência total",
+  "form_home":["?","?","?","?","?"],
+  "form_away":["?","?","?","?","?"],
+  "rating_home":"—","rating_away":"—",
+  "ref":"Davi de Oliveira Lacerda","ref_yellow":"5,18","ref_red":"0,18",
+  "ref_note":"(abaixo do juiz do Bahia; leve viés pró-under de cartões)",
   "cards":{
-     "exp":"5",
+     "exp":"5,3",
+     "sub":"árbitro Lacerda (5,18 am) — meu modelo fica ABAIXO do mercado: leve viés pró-under",
      "linhas":{
-        "Over 3.5":(0.69,0.75),
-        "Over 4.5":(0.54,0.58),
-        "Over 5.5":(0.37,0.40),
+        "Over 3.5":(0.78,0.77),
+        "Over 4.5":(0.65,0.61),
+        "Over 5.5":(0.50,0.44),
+        "Over 6.5":(0.35,0.28),
      }
   },
   "value":[
-    {"mercado":"Vitória Bahia (1x2)","odd":"1.40","precisa":"71%","estimo":"70%","veredito":"Justo"},
-    {"mercado":"Dupla: Bahia ou Empate","odd":"1.11","precisa":"90%","estimo":"88%","veredito":"Justo"},
-    {"mercado":"Over 2.5 gols","odd":"1.60","precisa":"63%","estimo":"60%","veredito":"-EV"},
-    {"mercado":"Ambos Marcam - Sim","odd":"1.80","precisa":"56%","estimo":"51%","veredito":"Sem valor"},
-    {"mercado":"Ambos Marcam - Não","odd":"1.95","precisa":"51%","estimo":"49%","veredito":"Justo"},
-    {"mercado":"Over 4.5 cartões","odd":"1.72","precisa":"58%","estimo":"58%","veredito":"Na trave"},
-    {"mercado":"Over 5.5 cartões","odd":"2.50","precisa":"40%","estimo":"40%","veredito":"Na trave"},
-    {"mercado":"Under 5.5 cartões","odd":"1.50","precisa":"67%","estimo":"62%","veredito":"-EV"},
+    {"mercado":"Vitória Fluminense (1x2)","odd":"1.90","precisa":"53%","estimo":"52%","veredito":"Justo"},
+    {"mercado":"Empate","odd":"3.40","precisa":"29%","estimo":"27%","veredito":"-EV"},
+    {"mercado":"Vitória Bragantino","odd":"4.33","precisa":"23%","estimo":"22%","veredito":"Justo"},
+    {"mercado":"Ambos Marcam - Sim","odd":"1.90","precisa":"53%","estimo":"50%","veredito":"Justo"},
+    {"mercado":"Over 2.5 gols","odd":"2.05","precisa":"49%","estimo":"45%","veredito":"-EV"},
+    {"mercado":"Under 2.5 gols","odd":"1.75","precisa":"57%","estimo":"55%","veredito":"Justo"},
+    {"mercado":"Under 5.5 cartões","odd":"1.83","precisa":"55%","estimo":"56%","veredito":"Valor"},
+    {"mercado":"Over 5.5 cartões","odd":"1.83","precisa":"55%","estimo":"44%","veredito":"-EV"},
+    {"mercado":"Over 4.5 cartões","odd":"1.44","precisa":"69%","estimo":"61%","veredito":"-EV"},
   ],
-  "verdict":("Favoritismo forte da Bahia em casa (70%), com os dois times completos e a Chapecoense "
-    "em péssima fase (0 vitórias em 5). Expectativa de bastante gol (xG total 3.2) e ~5 cartões, "
-    "com a Chape puxando a conta. Nas odds atuais nenhuma linha oferece vantagem clara — as mais "
-    "próximas do justo são a vitória da Bahia e o 'ambos não'. O 1x2 é a leitura mais confiável; "
-    "cartões, a menos confiável."),
+  "verdict":("ANÁLISE COMPLETA (times completos, jogo já rolando 0-0). Fluminense favorito moderado "
+    "no Maracanã: blend modelo+mercado dá 52% (empate 27%, Bragantino 22%). BTTS e Over/Under batem "
+    "no ponto com o mercado, inclinando levemente pro Under 2.5. A NOVIDADE são os cartões: com o "
+    "árbitro Lacerda (5,18 amarelos/jogo, abaixo do juiz do Bahia), minha estimativa (~5,3) fica "
+    "ABAIXO do que o mercado precifica (~5,5) — o único ponto do jogo com viés claro, levemente "
+    "pró-UNDER de cartões. Under 5.5 @1.83 é a linha mais próxima de valor (est. 56% vs 55% de "
+    "equilíbrio). No resto, mercado eficiente: jogo mais de leitura que de fichar."),
   "tips":[
-    "As barras seguem um degradê: vermelho = baixa probabilidade, âmbar = ~50%, verde = alta. Quanto mais verde e mais cheia, mais provável.",
-    "Confie no selo de confiança: 1x2 (ALTA) empata com o mercado; Ambos Marcam (MÉDIA) teve convergência modelo×mercado; Cartões (BAIXA) é leitura de árbitro, sem histórico por time.",
-    "'Precisa' vs 'Estimo' na tabela de valor: se 'Estimo' for MAIOR que 'Precisa', há valor na aposta; se for menor, a odd está cara.",
-    "Nenhuma linha aqui tem 'Estimo' claramente acima de 'Precisa' — ou seja, é um jogo sem aposta de valor óbvio, mais pra leitura do que pra fichar.",
-    "Cartões giram em torno de 5; a Chapecoense, correndo atrás e se defendendo, tende a ser o lado mais carimbado.",
-    "Me mande o próximo jogo (e, se tiver, odds/escalação/árbitro) que o dashboard sai no mesmo formato.",
+    "Barras em degradê: vermelho = pouco provável, âmbar ≈ 50%, verde = muito provável.",
+    "1x2, BTTS e Over/Under: modelo e mercado colados — leituras confiáveis, mas sem valor (odds justas).",
+    "ÚNICO viés do jogo: cartões. O árbitro Lacerda é menos cartão que a média, então o mercado (~5,5) parece um fio alto → leve valor no UNDER 5.5.",
+    "Cuidado: cartões ainda é confiança BAIXA (ancorado no árbitro, sem histórico por time). É um lean pequeno, não uma cravada.",
+    "Resumo pra fichar: nenhuma aposta forte; se for buscar algo, Under 5.5 cartões é a única com 'Estimo' acima do 'Precisa'.",
   ],
 }
-p = build(ctx)
-print("OK:", p)
+print("OK:", build(ctx))
