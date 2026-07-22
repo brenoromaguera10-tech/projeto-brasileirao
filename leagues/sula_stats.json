@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+"""
+Constrói sula_stats.json a partir dos Team Stats CSV do FootyStats.
+
+Uso:
+    python3 build_sula_from_teamstats.py <sudamericana_teams.csv> [<libertadores_teams.csv>]
+
+O CSV da Sudamericana cobre os times que jogaram a Sula; os que caíram da
+Libertadores vêm zerados lá e são completados pelo CSV da Libertadores
+(marcados com source='libertadores' p/ aplicar crédito de força de tabela).
+Saída: por time, taxas POR JOGO (gols, escanteios, cartões, chutes, faltas)
++ splits casa/fora + campanha.
+"""
+import csv, json, sys
+
+def carrega(path, source):
+    out = {}
+    for r in csv.DictReader(open(path, encoding='utf-8-sig')):
+        mp = int(r.get('matches_played') or 0)
+        if mp == 0:
+            continue
+        g = lambda c: float(r.get(c) or 0)
+        mh, ma = max(int(r.get('matches_played_home') or 0),1), max(int(r.get('matches_played_away') or 0),1)
+        out[r['team_name']] = {
+            'source': source, 'games': mp, 'pos_grupo': int(r.get('league_position') or 0),
+            'camp': f"{r.get('wins')}V {r.get('draws')}E {r.get('losses')}D {r.get('goals_scored')}:{r.get('goals_conceded')}",
+            'gf_pg': g('goals_scored')/mp, 'ga_pg': g('goals_conceded')/mp,
+            'gf_home_pg': g('goals_scored_home')/mh, 'ga_home_pg': g('goals_conceded_home')/mh,
+            'gf_away_pg': g('goals_scored_away')/ma, 'ga_away_pg': g('goals_conceded_away')/ma,
+            'corners_pg': g('corners_total')/mp, 'cards_pg': g('cards_total')/mp,
+            'fouls_pg': g('fouls')/mp, 'shots_pg': g('shots')/mp,
+            'sot_pg': g('shots_on_target')/mp,
+            'btts_pct': g('btts_count')/mp, 'cs_pct': g('clean_sheets')/mp,
+        }
+    return out
+
+def main(argv):
+    sula = carrega(argv[1], 'sudamericana')
+    stats = dict(sula)
+    if len(argv) > 2:
+        lib = carrega(argv[2], 'libertadores')
+        for t, v in lib.items():
+            if t not in stats:          # só completa quem não jogou a Sula
+                stats[t] = v
+    # médias da liga (base = jogos da Sula)
+    n = sum(v['games'] for v in sula.values())
+    liga = {
+        'gols_pg_time': sum(v['gf_pg']*v['games'] for v in sula.values())/n,
+        'corners_pg_time': sum(v['corners_pg']*v['games'] for v in sula.values())/n,
+        'cards_pg_time': sum(v['cards_pg']*v['games'] for v in sula.values())/n,
+    }
+    json.dump({'_liga': liga, **dict(sorted(stats.items()))},
+              open('sula_stats.json','w',encoding='utf-8'), ensure_ascii=False, indent=1)
+    print(f"OK: {len(stats)} times ({len(sula)} da Sula) -> sula_stats.json")
+    print(f"liga: gols/time/jogo {liga['gols_pg_time']:.2f} | escanteios/time {liga['corners_pg_time']:.2f} | cartões/time {liga['cards_pg_time']:.2f}")
+
+if __name__ == '__main__':
+    main(sys.argv)

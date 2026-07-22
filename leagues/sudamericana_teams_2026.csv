@@ -1,0 +1,36 @@
+# leagues/ — pacotes de dados por liga (roadmap_multiliga)
+
+Princípio: **motor agnóstico** (raiz do repo, nunca reconstruir) + **pacote de
+dados por liga** (esta pasta). Liga nova = 1 config JSON + 1 CSV do FootyStats.
+Zero código novo.
+
+## Receita para (re)construir uma liga
+
+1. FootyStats (login pago) → `footystats.org/download-stats-csv` → escolher a
+   liga/copa → baixar o **Match Stats CSV** (o da página central da liga; o menu
+   lateral só tem Liga/Equipe/H2H/jogador).
+2. `python3 build_footystats.py <liga>.json <match_stats.csv>`
+   → gera `<LIGA>.csv` (formato do motor) + `<liga>_stats.json` (médias por
+   time para chutes/escanteios/cartões).
+3. Conferir os nomes de time impressos e completar os `aliases` no JSON.
+4. Calibrar: backtest próprio da liga (log-loss vs. mercado) antes de confiar
+   no blend — **não assumir o 85/15 da Série A**. Gravar em `model_params`
+   (Supabase) com `competition=<code>`.
+
+## Ligas
+
+| config | competição | estado |
+|---|---|---|
+| `serie_b.json` | Série B (BR) | calibrada — `model_params` id=2 |
+| `sula.json` | Copa Sudamericana | params provisórios até baixar o CSV e calibrar |
+
+## Uso
+
+```python
+import sys; sys.path += [".", "leagues"]
+from league_loader import load_league
+liga = load_league("leagues/sula.json")
+model = liga["fit"]()
+```
+
+Análises no Supabase sempre com a coluna `competition` = código da liga.

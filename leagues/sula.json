@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+"""
+Sula 2026 — modelo provisório por AGREGADO DE CAMPANHA (precedente copa_2026).
+
+Enquanto não há base jogo a jogo (FootyStats), usa a campanha da fase de
+grupos 2026 (parcial: rodadas até 30/04, únicas verificáveis em fonte aberta,
+consistentes entre 2+ extrações independentes) + params explícitos.
+
+PARAMS PROVISÓRIOS (declarados, não calibrados para a Sula):
+  MU        gols/time/jogo base continental
+  HA        multiplicador de mando (Série A calibrada: exp(0.3602)),
+            aplicado simétrico (sqrt pró-casa, /sqrt contra-visitante)
+  SOS_LIB   crédito de força de tabela p/ campanhas na Libertadores
+  K         encolhimento bayesiano p/ amostra minúscula (3 jogos)
+  RHO       correção Dixon-Coles (Série A)
+Confiança: BAIXA em tudo. O fechamento com odds domina (blend 90% mercado).
+"""
+import math
+
+MU, HA, SOS_LIB, K, RHO = 1.13, math.exp(0.3602), 1.15, 4.0, 0.0152
+# MU = gols/time/jogo real da fase de grupos da Sula 2026 (FootyStats, 114 jogos)
+
+# Campanhas 2026:
+#  - times da Sula: campanha COMPLETA (FootyStats Team Stats, sudamericana_teams_2026.csv)
+#  - times vindos da Libertadores: parcial (3 rodadas, Wikipédia) até chegar o CSV da Libertadores
+CAMP = {
+    "Independiente Medellin": dict(comp="lib",  j=3, v=1, e=1, d=1, gf=3,  ga=5),
+    "Vasco da Gama":          dict(comp="sula", j=6, v=3, e=1, d=2, gf=10, ga=6),
+    "Lanus":                  dict(comp="lib",  j=3, v=2, e=0, d=1, gf=2,  ga=1),
+    "Cienciano":              dict(comp="sula", j=7, v=2, e=3, d=2, gf=6,  ga=8),
+    "Sporting Cristal":       dict(comp="lib",  j=3, v=2, e=0, d=1, gf=4,  ga=2),
+    "RB Bragantino":          dict(comp="sula", j=6, v=3, e=1, d=2, gf=12, ga=5),
+}
+
+def _rating(t):
+    c = CAMP[t]; sos = SOS_LIB if c["comp"] == "lib" else 1.0
+    att_raw = (c["gf"]/c["j"]) / MU * sos
+    def_raw = (c["ga"]/c["j"]) / MU / sos
+    att = (att_raw*c["j"] + 1.0*K) / (c["j"]+K)   # encolhe p/ média
+    dfs = (def_raw*c["j"] + 1.0*K) / (c["j"]+K)
+    return att, dfs
+
+def dc_tau(hg, ag, lh, la, rho):
+    if hg == 0 and ag == 0: return 1 - lh*la*rho
+    if hg == 0 and ag == 1: return 1 + lh*rho
+    if hg == 1 and ag == 0: return 1 + la*rho
+    if hg == 1 and ag == 1: return 1 - rho
+    return 1.0
+
+def _pois(l, k): return math.exp(-l)*l**k/math.factorial(k)
+
+def analisar_sula(home, away, neutral=False):
+    ah, dh = _rating(home); aa, da = _rating(away)
+    ha = 1.0 if neutral else HA
+    lh = MU * ah * da * math.sqrt(ha)
+    la = MU * aa * dh / math.sqrt(ha)
+    N = 9
+    grid = [[_pois(lh,i)*_pois(la,j)*dc_tau(i,j,lh,la,RHO) for j in range(N)] for i in range(N)]
+    s = sum(map(sum, grid)); grid = [[p/s for p in row] for row in grid]
+    pc = sum(grid[i][j] for i in range(N) for j in range(N) if i > j)
+    pf = sum(grid[i][j] for i in range(N) for j in range(N) if i < j)
+    pe = 1 - pc - pf
+    btts = sum(grid[i][j] for i in range(1,N) for j in range(1,N))
+    over15 = sum(grid[i][j] for i in range(N) for j in range(N) if i+j >= 2)
+    over25 = sum(grid[i][j] for i in range(N) for j in range(N) if i+j >= 3)
+    top = sorted((((i,j), grid[i][j]) for i in range(N) for j in range(N)),
+                 key=lambda x: -x[1])[:6]
+    probs = {"casa": pc, "empate": pe, "fora": pf}
+    return {"home": home, "away": away, "xg_home": lh, "xg_away": la,
+            "probs": probs, "btts": btts, "btts_nao": 1-btts,
+            "over25": over25, "over15": over15, "under25": 1-over25,
+            "top_scores": top, "favorito": max(probs, key=probs.get)}
+
+if __name__ == "__main__":
+    for h, a in [("Independiente Medellin","Vasco da Gama"),
+                 ("Lanus","Cienciano"),
+                 ("Sporting Cristal","RB Bragantino")]:
+        d = analisar_sula(h, a)
+        p = d["probs"]
+        print(f"{h} x {a}: xG {d['xg_home']:.2f}-{d['xg_away']:.2f} | "
+              f"1x2 {p['casa']*100:.0f}/{p['empate']*100:.0f}/{p['fora']*100:.0f} | "
+              f"BTTS {d['btts']*100:.0f}% | O2.5 {d['over25']*100:.0f}%")
